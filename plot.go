@@ -8,15 +8,51 @@ import (
 	"github.com/go-echarts/go-echarts/charts"
 )
 
-func genData() [][3]float64 {
-	calculate()
+var rangeColor = []string{
+	"#313695", "#4575b4", "#74add1", "#abd9e9", "#e0f3f8",
+	"#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026",
+}
+
+func MinMax(minmax string) float32 {
+	var max float64 = z[0]
+	var min float64 = z[0]
+	for _, value := range z {
+		if max < value {
+			max = value
+		}
+		if min > value {
+			min = value
+		}
+	}
+
+	if minmax == "min" {
+		return float32(min)
+	}
+	return float32(max)
+}
+
+func getData() [][3]float64 {
 	data := make([][3]float64, 0)
-	for i := 0; i < 100; i++ {
+	for i := 0; i < int(N); i++ {
 		data = append(data,
 			[3]float64{
 				x[i],
 				y[i],
 				z[i],
+			},
+		)
+	}
+	return data
+}
+
+func getData2D() [][2]float64 {
+	calculate()
+	data := make([][2]float64, 0)
+	for i := 0; i < int(N); i++ {
+		data = append(data,
+			[2]float64{
+				x[i],
+				y[i],
 			},
 		)
 	}
@@ -29,11 +65,12 @@ func PlotBase() *charts.Line3D {
 		charts.TitleOpts{Title: "Electromagnetic field"},
 		charts.VisualMapOpts{
 			Calculable: true,
+			Min:        MinMax("min"),
+			Max:        MinMax("max"),
 			InRange:    charts.VMInRange{Color: rangeColor},
-			Max:        30,
 		},
 	)
-	line3d.AddZAxis("", genData())
+	line3d.AddZAxis("", getData())
 	return line3d
 }
 

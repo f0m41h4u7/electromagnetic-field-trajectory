@@ -1,45 +1,40 @@
 package main
 
 import (
-	"fmt"
 	"math"
 )
 
+var N float64 // number of dots
+
 var (
-	B     = 0.1
-	q     = 1.6 * math.Pow10(-19)
-	m     = 9.1 * math.Pow10(-31)
-	dt    = math.Pow10(-5)
-	omega = q * B / m
-	v0    = math.Pow10(7)
-	r0    = m * v0 * q * B
-	t0    = 1 / omega
-	alpha = 0.785
+	B     = 0.01                  // induction, in teslas
+	q     = 1.6 * math.Pow10(-19) // charge, in coulombs
+	m     = 9.1 * math.Pow10(-31) // mass, in kg
+	dt    = math.Pow10(-10)       // time step, in s
+	omega = q * B / m             // Larmor fequency, in herz
+	v     = math.Pow10(7)         // initial velocity, in m/s
+	r     = m * v / q / B         // Larmor radius, in m
 
-	// Coordinates
-	x = make([]float64, 100)
-	y = make([]float64, 100)
-	z = make([]float64, 100)
-
-	// Velocity components
-	v_x = make([]float64, 100)
-	v_y = make([]float64, 100)
-	v_z = v0 * math.Cos(alpha)
+	x   = []float64{}
+	y   = []float64{}
+	z   = []float64{}
+	phi = []float64{}
 )
 
 func calculate() {
-	x[0] = 1
-	v_y[0] = 1
+	x = append(x, r)
+	y = append(y, 0)
+	z = append(z, 0)
+	phi = append(phi, 0)
+
 	i := 1
-	for t := dt / t0; t < math.Pow10(-3)/t0-dt/t0; t += dt / t0 {
-		v_x[i] = v_x[i-1] + v0*math.Sin(alpha)*dt
-		v_y[i] = v_y[i-1] - v0*math.Sin(alpha)*dt
+	for t := dt; t < N*dt-dt; t += dt {
+		phi = append(phi, phi[i-1]+omega*dt)
 
-		x[i] = x[i-1] + v_x[i-1]*dt
-		y[i] = y[i-1] + v_y[i-1]*dt
-		z[i] = z[i-1] + v_z*dt
-
+		x = append(x, r*math.Cos(phi[i]))
+		y = append(y, r*math.Sin(phi[i]))
+		z = append(z, z[i-1]+v*dt)
 		i++
 	}
-	fmt.Printf("%v\n%v\n", v_x, v_y)
+	N = float64(len(x))
 }
