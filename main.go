@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"path"
 
 	"github.com/go-echarts/go-echarts/charts"
@@ -21,29 +22,31 @@ var routers = []router{
 	{"electromagneticFieldPlot", charts.RouterOpts{URL: host + "/electromagnetic", Text: "Electromagnetic field"}},
 }
 
-var rangeColor = []string{
-	"#313695", "#4575b4", "#74add1", "#abd9e9", "#e0f3f8",
-	"#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026",
+func electromagneticPlotHandler(w http.ResponseWriter, _ *http.Request) {
+	page := charts.NewPage(orderRouters("electromagneticFieldPlot")...)
+	page.Add(
+		EMPlotBase(),
+	)
+	f, _ := os.Create(getRenderPath("electromagneticPlot.html"))
+	page.Render(w, f)
 }
 
-func MinMax(z [][3]float64, minmax string) float32 {
-	var max float64 = z[0][2]
-	var min float64 = z[0][2]
+func electricPlotHandler(w http.ResponseWriter, _ *http.Request) {
+	page := charts.NewPage(orderRouters("electricFieldPlot")...)
+	page.Add(
+		ElectricPlotBase(),
+	)
+	f, _ := os.Create(getRenderPath("electricPlot.html"))
+	page.Render(w, f)
+}
 
-	for i := 0; i < len(z); i++ {
-		value := z[i][2]
-		if max < value {
-			max = value
-		}
-		if min > value {
-			min = value
-		}
-	}
-
-	if minmax == "min" {
-		return float32(min)
-	}
-	return float32(max)
+func magneticPlotHandler(w http.ResponseWriter, _ *http.Request) {
+	page := charts.NewPage(orderRouters("magneticFieldPlot")...)
+	page.Add(
+		MagneticPlotBase(),
+	)
+	f, _ := os.Create(getRenderPath("magneticPlot.html"))
+	page.Render(w, f)
 }
 
 func orderRouters(chartType string) []charts.RouterOpts {
