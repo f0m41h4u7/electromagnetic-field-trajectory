@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 
+	calc "github.com/f0m41h4u7/electromagnetic-field-trajectory/calculation"
 	"github.com/go-echarts/go-echarts/charts"
 )
 
@@ -76,9 +77,9 @@ func logTracing(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func main() {
-	calculateMagnetic()
-	calculateElectric()
-	calculateElectromagnetic()
+	calc.CalculateMagnetic()
+	calc.CalculateElectric()
+	calc.CalculateElectromagnetic()
 
 	http.HandleFunc("/magnetic", logTracing(magneticPlotHandler))
 	http.HandleFunc("/electric", logTracing(electricPlotHandler))

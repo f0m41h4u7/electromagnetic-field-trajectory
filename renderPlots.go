@@ -1,6 +1,9 @@
 package main
 
-import "github.com/go-echarts/go-echarts/charts"
+import (
+	c "github.com/f0m41h4u7/electromagnetic-field-trajectory/calculation"
+	"github.com/go-echarts/go-echarts/charts"
+)
 
 var rangeColor = []string{
 	"#313695", "#4575b4", "#74add1", "#abd9e9", "#e0f3f8",
@@ -33,12 +36,12 @@ func EMPlotBase() *charts.Line3D {
 		charts.TitleOpts{Title: "Electromagnetic field"},
 		charts.VisualMapOpts{
 			Calculable: true,
-			Min:        MinMax(em_data, "min"),
-			Max:        MinMax(em_data, "max"),
+			Min:        MinMax(c.Em_data, "min"),
+			Max:        MinMax(c.Em_data, "max"),
 			InRange:    charts.VMInRange{Color: rangeColor},
 		},
 	)
-	line3d.AddZAxis("", em_data)
+	line3d.AddZAxis("", c.Em_data)
 	return line3d
 }
 
@@ -48,12 +51,12 @@ func ElectricPlotBase() *charts.Line3D {
 		charts.TitleOpts{Title: "Electric field"},
 		charts.VisualMapOpts{
 			Calculable: true,
-			Min:        MinMax(e_data, "min"),
-			Max:        MinMax(e_data, "max"),
+			Min:        MinMax(c.E_data, "min"),
+			Max:        MinMax(c.E_data, "max"),
 			InRange:    charts.VMInRange{Color: rangeColor},
 		},
 	)
-	line3d.AddZAxis("", e_data)
+	line3d.AddZAxis("", c.E_data)
 	return line3d
 }
 
@@ -63,11 +66,11 @@ func MagneticPlotBase() *charts.Line3D {
 		charts.TitleOpts{Title: "Magnetic field"},
 		charts.VisualMapOpts{
 			Calculable: true,
-			Min:        MinMax(m_data, "min"),
-			Max:        MinMax(m_data, "max"),
+			Min:        MinMax(c.M_data, "min"),
+			Max:        MinMax(c.M_data, "max"),
 			InRange:    charts.VMInRange{Color: rangeColor},
 		},
 	)
-	line3d.AddZAxis("", m_data)
+	line3d.AddZAxis("", c.M_data)
 	return line3d
 }
